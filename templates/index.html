@@ -1,1 +1,52 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>跨设备文件互传</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .qr-code { text-align: center; margin: 20px 0; }
+        .qr-code img { max-width: 200px; }
+        .upload-form { margin: 20px 0; padding: 20px; border: 1px solid #ddd; background-color: #f9f9f9; }
+        .file-list { margin-top: 20px; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        .file-item:last-child { border-bottom: none; }
+        .file-name { flex-grow: 1; margin-right: 10px; }
+        .file-size { min-width: 80px; text-align: right; }
+        .download-btn { background-color: #4CAF50; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; }
+        .upload-btn { background-color: #008CBA; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>跨设备文件互传</h1>
+    
+    <div class="qr-code">
+        <p>使用手机扫描下方二维码访问此页面:</p>
+        <img src="data:image/png;base64,{{ qr_img }}" alt="访问二维码">
+        <p><small>{{ server_url }}</small></p>
+    </div>
+    
+    <div class="upload-form">
+        <h3>上传文件到电脑</h3>
+        <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button class="upload-btn" type="submit">上传</button>
+        </form>
+    </div>
+    
+    <div class="file-list">
+        <h3>可下载的文件</h3>
+        {% if files %}
+            {% for file in files %}
+                <div class="file-item">
+                    <span class="file-name">{{ file.name }}</span>
+                    <span class="file-size">{{ (file.size / 1024)|round(1) }} KB</span>
+                    <a class="download-btn" href="{{ file.url }}">下载</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>暂无文件</p>
+        {% endif %}
+    </div>
+</body>
+</html>
